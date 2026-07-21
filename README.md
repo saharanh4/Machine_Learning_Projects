@@ -1,6 +1,4 @@
-# These are my personal projects for my own personal growth
 ## 1.) Iris Classification
-
 ### Overview
 This project is made to learn about machine learning using project based learning it is a very basic project
 
