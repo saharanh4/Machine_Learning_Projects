@@ -2,17 +2,17 @@
 ### Overview
 This project is made to learn about machine learning using project based learning it is a very basic project
 
-## Objective
+### Objective
 I want to classify flowers on the following parameters so that when a new data is introduced machine can easily classify on the basis of.
 - Petal Width 
 - Petal Length
 - Sepal Width
 - Sepal Length
 
-## Dataset
+### Dataset
 Iris Classification data is use 
 
-## Technologies Used
+### Technologies Used
 - Python
 - NumPy
 - Pandas
@@ -27,44 +27,44 @@ Iris Classification data is use
         - Plot Tree
         - Decision Tree Classifier
 
-## Model/Algorithm & Result
+### Model/Algorithm & Result
 Decision Tree Classifier is used to predict the outcome which yield a good accuracy of 96.6 Percent 
 
-## Future Improvements
+### Future Improvements
 - Accuracy can be further improved by changing used model
 - Pipelines can be created too
 
-## Learning Outcomes
+### Learning Outcomes
 - Basic use of models 
 - Use of different libraries in a machine learning workflow environment 
 
 ## 2.) Salary Prediction — Linear Regression from Scratch
 A simple linear regression model implemented from scratch (no `sklearn.linear_model`) to predict salary from years of experience, using manually coded cost function and batch gradient descent.
 
-## Overview
+### Overview
 
 This project predicts `Salary` from `YearsExperience` using univariate linear regression. The gradient descent update rule, cost function, and training loop are all implemented manually in NumPy/pandas to demonstrate the underlying mechanics rather than relying on a library like scikit-learn.
 
-## Features
+### Features
 
 - Manual implementation of the squared-error cost function
 - Manual implementation of the gradient descent update rule
 - Data visualization: raw scatter plot and fitted regression line
 - No black-box ML library used for training — pure math implementation
 
-## Tech Stack
+### Tech Stack
 
 - Python 3.x
 - pandas / NumPy
 - Matplotlib
 
-## Dataset
+### Dataset
 
 `Salary Data.csv` — two columns:
 - `YearsExperience` (feature)
 - `Salary` (target)
 
-## Model
+### Model
 
 Simple linear model: `Salary = w * YearsExperience + b`
 
@@ -73,7 +73,7 @@ Trained via batch gradient descent:
 - **Iterations:** 20,000
 - **Result:** `w ≈ 5986.25`, `b ≈ 45666.16`
 
-## ⚠️ Known Issues (Please Read Before Using)
+### ⚠️ Known Issues (Please Read Before Using)
 
 This is a learning project and currently has two unresolved bugs:
 
@@ -97,7 +97,7 @@ numpy
 matplotlib
 ```
 
-## Future Improvements
+### Future Improvements
 
 - Fix the gradient return/unpack order and re-validate `w`/`b`
 - Fix the cost function precedence bug
