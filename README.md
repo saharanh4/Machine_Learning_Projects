@@ -104,7 +104,3 @@ matplotlib
 - Add a cost-vs-iteration plot to visually confirm convergence
 - Validate against `sklearn.linear_model.LinearRegression` as ground truth
 - Add train/test split and report R² / MSE on held-out data
-
-## License
-
-This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
