@@ -218,7 +218,7 @@ Kaggle's "House Prices: Advanced Regression Techniques" (`train.csv`, `test.csv`
 7. **Model tuning** — `GridSearchCV` (5-fold, RMSE) for XGBoost, Random Forest, and Ridge independently
 8. **Ensemble** — final prediction = `0.5 * XGBoost + 0.3 * RandomForest + 0.2 * Ridge`
 
-## #⚠️ Known Issues / Things to Verify
+###⚠️ Known Issues / Things to Verify
 
 1. **Possible silent no-op in categorical handling.** The code checks `df[col].dtype == 'str'` and later `select_dtypes(include='str')` to identify categorical columns. In pandas, text columns loaded via `read_csv` are typically dtype `object`, not `str` — these checks may not match any columns as intended, meaning categorical null-filling and one-hot encoding could be silently skipped. **Before trusting this pipeline, verify:**
    ```python
@@ -229,22 +229,6 @@ Kaggle's "House Prices: Advanced Regression Techniques" (`train.csv`, `test.csv`
 2. **Ensemble weights are hardcoded, not tuned.** `0.5 * xgb + 0.3 * rf + 0.2 * ridge` was chosen manually rather than optimized against a validation set. Consider tuning these weights (e.g. via a small grid search against out-of-fold predictions) if you want to claim they're optimal.
 3. **No held-out validation set for the final ensemble.** `GridSearchCV` gives a solid cross-validated estimate for each individual model, but the blended ensemble's performance is only known via the actual Kaggle leaderboard submission, not verified locally.
 
-### Installation
-
-```bash
-git clone https://github.com/[your-username]/[repo-name].git
-cd [repo-name]
-pip install -r requirements.txt
-```
-
-**requirements.txt**
-```
-pandas
-matplotlib
-scikit-learn
-xgboost
-```
-
 ### Usage
 
 Place `train.csv` and `test.csv` in the `Data/house/` directory, then run:
@@ -254,18 +238,6 @@ python house_price_ensemble.py
 ```
 
 This generates `submission.csv` in Kaggle submission format (`Id`, `SalePrice`).
-
-### Project Structure
-
-```
-├── Data/
-│   └── house/
-│       ├── train.csv
-│       └── test.csv
-├── house_price_ensemble.py
-├── requirements.txt
-└── README.md
-```
 
 ### Future Improvements
 
