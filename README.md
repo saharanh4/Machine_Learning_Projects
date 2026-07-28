@@ -176,7 +176,7 @@ scikit-learn
 - Generate and save a Kaggle-format `submission.csv`
 
 
-## 2.) House Prices Prediction 
+## 4.) House Prices Prediction 
 
 A regression pipeline predicting house sale prices (Kaggle's "House Prices: Advanced Regression Techniques") using a weighted ensemble of XGBoost, Random Forest, and Ridge regression, with hyperparameters tuned via `GridSearchCV`.
 
