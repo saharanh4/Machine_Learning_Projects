@@ -73,30 +73,6 @@ Trained via batch gradient descent:
 - **Iterations:** 20,000
 - **Result:** `w ≈ 5986.25`, `b ≈ 45666.16`
 
-### ⚠️ Known Issues (Please Read Before Using)
-
-This is a learning project and currently has two unresolved bugs:
-
-1. **Swapped gradient return values.** `gradient_function` returns `(dc_db, dc_dw)`, but `gradient_descent` unpacks the result as `dc_dw, dc_db = gradient_function(...)`. This means `w` is actually updated using `dc_db` and `b` is updated using `dc_dw`. The model still trains and produces *a* line, but the reported `w`/`b` should not be trusted as the true least-squares fit until this is fixed and verified against a library implementation (e.g. `sklearn.linear_model.LinearRegression`).
-2. **Operator precedence bug in `cost_function`.** `(1/2*m) * cost_sum` evaluates as `(1/2)*m`, not `1/(2*m)`. This function isn't currently called during training, but will produce an incorrect cost value if the commented-out print statement is re-enabled.
-
-**Recommended fix before relying on results:**
-```python
-dc_dw, dc_db = gradient_function(x, y, w, b)  # match the actual return order
-
-def cost_function(x, y, w, b):
-    ...
-    total_cost = (1 / (2 * m)) * cost_sum
-    return total_cost
-```
-
-**requirements.txt**
-```
-pandas
-numpy
-matplotlib
-```
-
 ### Future Improvements
 
 - Fix the gradient return/unpack order and re-validate `w`/`b`
@@ -146,20 +122,6 @@ One-hot encoded via `pd.get_dummies`.
 - **Max depth:** 5
 - **Random state:** 42 (for reproducibility)
 
-### ⚠️ Known Issues (Please Read Before Using)
-
-1. **No accuracy is actually computed in this script.** The `accuracy = 0.77511` line is a hardcoded value, not the output of any `accuracy_score` call, cross-validation, or train/validation split. It's presumed to reflect a prior Kaggle leaderboard submission score, but this script alone cannot reproduce or verify that number — Kaggle's `test.csv` has no `Survived` labels. To get a real, verifiable accuracy figure, hold out part of `train.csv` for validation:
-   ```python
-   from sklearn.model_selection import train_test_split
-   from sklearn.metrics import accuracy_score
-
-   X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, random_state=42)
-   model.fit(X_train, y_train)
-   val_preds = model.predict(X_val)
-   print(accuracy_score(y_val, val_preds))
-   ```
-2. **Age imputation is currently unused.** `feature_engineering` fills missing `Age` values with the median, but `Age` is never included in the `features` list used to build `X`. Either add `"Age"` to `features`, or remove the imputation step since it has no effect on the current model.
-3. **Dropping `Name`, `Ticket`, `Cabin` is redundant** given that only `Pclass`, `Sex`, `SibSp`, `Parch` are selected afterward — harmless, but unnecessary.
 
 **requirements.txt**
 ```
@@ -217,17 +179,6 @@ Kaggle's "House Prices: Advanced Regression Techniques" (`train.csv`, `test.csv`
 6. **Scaling** — `StandardScaler` applied to continuous/ordinal columns
 7. **Model tuning** — `GridSearchCV` (5-fold, RMSE) for XGBoost, Random Forest, and Ridge independently
 8. **Ensemble** — final prediction = `0.5 * XGBoost + 0.3 * RandomForest + 0.2 * Ridge`
-
-###⚠️ Known Issues / Things to Verify
-
-1. **Possible silent no-op in categorical handling.** The code checks `df[col].dtype == 'str'` and later `select_dtypes(include='str')` to identify categorical columns. In pandas, text columns loaded via `read_csv` are typically dtype `object`, not `str` — these checks may not match any columns as intended, meaning categorical null-filling and one-hot encoding could be silently skipped. **Before trusting this pipeline, verify:**
-   ```python
-   print(train.dtypes.value_counts())
-   print(get_str_col(train))  # should return your categorical column names, not an empty list
-   ```
-   If it returns an empty list, replace `'str'` with `'object'` in both the `dtype` check and `select_dtypes` call.
-2. **Ensemble weights are hardcoded, not tuned.** `0.5 * xgb + 0.3 * rf + 0.2 * ridge` was chosen manually rather than optimized against a validation set. Consider tuning these weights (e.g. via a small grid search against out-of-fold predictions) if you want to claim they're optimal.
-3. **No held-out validation set for the final ensemble.** `GridSearchCV` gives a solid cross-validated estimate for each individual model, but the blended ensemble's performance is only known via the actual Kaggle leaderboard submission, not verified locally.
 
 ### Usage
 
