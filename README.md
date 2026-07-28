@@ -175,3 +175,102 @@ scikit-learn
 - Tune `n_estimators` / `max_depth` via cross-validation or grid search
 - Generate and save a Kaggle-format `submission.csv`
 
+
+## 2.) House Prices Prediction 
+
+A regression pipeline predicting house sale prices (Kaggle's "House Prices: Advanced Regression Techniques") using a weighted ensemble of XGBoost, Random Forest, and Ridge regression, with hyperparameters tuned via `GridSearchCV`.
+
+### Overview
+
+This project builds a full tabular regression pipeline: missing-value handling, manual feature engineering, ordinal + one-hot encoding of categorical features, feature scaling, hyperparameter search across three models, and a manually-weighted ensemble of their predictions.
+
+**Kaggle result:** RMSE (log SalePrice) ≈ 0.12345, Rank ≈ 939
+
+### Features
+
+- Missing-value visualization (bar chart of top 20 columns by null count)
+- Custom feature engineering: `has_<feature>` flags, `TotalSF`, `HouseAge`
+- Domain-aware ordinal encoding for quality-scale features (`Po`→`Ex`), fence type, garage finish, basement exposure, and finish type
+- One-hot encoding for remaining nominal categorical features
+- Feature scaling on continuous/ordinal columns
+- Hyperparameter tuning via `GridSearchCV` (5-fold CV, RMSE scoring) for XGBoost, Random Forest, and Ridge
+- Weighted ensemble of the three tuned models' predictions
+
+### Tech Stack
+
+- Python 3.x
+- pandas / Matplotlib
+- scikit-learn (`OrdinalEncoder`, `OneHotEncoder`, `StandardScaler`, `Ridge`, `RandomForestRegressor`, `GridSearchCV`)
+- XGBoost (`XGBRegressor`)
+
+### Dataset
+
+Kaggle's "House Prices: Advanced Regression Techniques" (`train.csv`, `test.csv`) — 79 explanatory variables describing residential homes in Ames, Iowa. Target: `SalePrice`.
+
+### Pipeline
+
+1. **Null-value inspection** — bar chart of the top 20 columns by missing-value count
+2. **Feature engineering** — presence flags for sparse features (`Alley`, `BsmtQual`, `PoolQC`, `Fence`, `MiscFeature`, `GarageYrBlt`), plus `TotalSF` (total square footage) and `HouseAge` (years since built)
+3. **Null handling** — `GarageYrBlt` imputed from `YearBuilt`; categorical nulls filled with `'None'`; numeric nulls filled with `0`
+4. **Ordinal encoding** — quality/condition-scale columns mapped to an explicit ordered scale (`None < Po < Fa < TA < Gd < Ex`, and dataset-specific scales for fence, garage finish, basement exposure/finish type)
+5. **One-hot encoding** — remaining nominal categorical columns
+6. **Scaling** — `StandardScaler` applied to continuous/ordinal columns
+7. **Model tuning** — `GridSearchCV` (5-fold, RMSE) for XGBoost, Random Forest, and Ridge independently
+8. **Ensemble** — final prediction = `0.5 * XGBoost + 0.3 * RandomForest + 0.2 * Ridge`
+
+## #⚠️ Known Issues / Things to Verify
+
+1. **Possible silent no-op in categorical handling.** The code checks `df[col].dtype == 'str'` and later `select_dtypes(include='str')` to identify categorical columns. In pandas, text columns loaded via `read_csv` are typically dtype `object`, not `str` — these checks may not match any columns as intended, meaning categorical null-filling and one-hot encoding could be silently skipped. **Before trusting this pipeline, verify:**
+   ```python
+   print(train.dtypes.value_counts())
+   print(get_str_col(train))  # should return your categorical column names, not an empty list
+   ```
+   If it returns an empty list, replace `'str'` with `'object'` in both the `dtype` check and `select_dtypes` call.
+2. **Ensemble weights are hardcoded, not tuned.** `0.5 * xgb + 0.3 * rf + 0.2 * ridge` was chosen manually rather than optimized against a validation set. Consider tuning these weights (e.g. via a small grid search against out-of-fold predictions) if you want to claim they're optimal.
+3. **No held-out validation set for the final ensemble.** `GridSearchCV` gives a solid cross-validated estimate for each individual model, but the blended ensemble's performance is only known via the actual Kaggle leaderboard submission, not verified locally.
+
+### Installation
+
+```bash
+git clone https://github.com/[your-username]/[repo-name].git
+cd [repo-name]
+pip install -r requirements.txt
+```
+
+**requirements.txt**
+```
+pandas
+matplotlib
+scikit-learn
+xgboost
+```
+
+### Usage
+
+Place `train.csv` and `test.csv` in the `Data/house/` directory, then run:
+
+```bash
+python house_price_ensemble.py
+```
+
+This generates `submission.csv` in Kaggle submission format (`Id`, `SalePrice`).
+
+### Project Structure
+
+```
+├── Data/
+│   └── house/
+│       ├── train.csv
+│       └── test.csv
+├── house_price_ensemble.py
+├── requirements.txt
+└── README.md
+```
+
+### Future Improvements
+
+- Confirm the `'str'` dtype checks are actually matching categorical columns (see Known Issues)
+- Log-transform `SalePrice` and skewed numeric features before training (standard practice for this dataset)
+- Tune ensemble weights against a proper out-of-fold validation scheme instead of hardcoding them
+- Try target encoding for high-cardinality categorical features (e.g. `Neighborhood`)
+- Add SHAP or feature importance analysis to explain model predictions
