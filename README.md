@@ -189,6 +189,74 @@ Kaggle's "House Prices: Advanced Regression Techniques" (`train.csv`, `test.csv`
 - Try target encoding for high-cardinality categorical features (e.g. `Neighborhood`)
 - Add SHAP or feature importance analysis to explain model predictions
 
+## 5.) Cat vs Dog Image Classifier — CNN
+
+A convolutional neural network that classifies images as cat or dog, built with TensorFlow/Keras, using data augmentation and early stopping to reduce overfitting on a relatively small image dataset.
+
+## Overview
+
+This project trains a CNN from scratch (no transfer learning) on labeled cat/dog images, using on-the-fly data augmentation, a three-block convolutional architecture, and checkpointing of the best-performing model during training.
+
+## Features
+
+- Automatic dataset loading and labeling from directory structure (`image_dataset_from_directory`)
+- Stratified train/validation split (80/20) from the training directory
+- On-the-fly data augmentation: random horizontal flip, rotation, and zoom
+- Image rescaling (pixel values normalized to [0, 1])
+- Three-block CNN architecture with increasing filter depth
+- Dropout regularization before the output layer
+- Early stopping on validation loss + checkpointing of the best model by validation accuracy
+- Evaluation via test accuracy/loss, training curves, confusion matrix, and classification report
+
+## Tech Stack
+
+- Python 3.x
+- TensorFlow / Keras
+- scikit-learn (`classification_report`, `confusion_matrix`)
+- Matplotlib / NumPy
+
+Images are resized to 180×180 and loaded in batches of 32.
+
+## Model Architecture
+
+```
+Input Image (180x180x3)
+   → Data Augmentation (RandomFlip, RandomRotation, RandomZoom)
+   → Rescaling (1/255)
+   → Conv2D(32, 3x3, relu) → MaxPooling2D
+   → Conv2D(64, 3x3, relu) → MaxPooling2D
+   → Conv2D(128, 3x3, relu) → MaxPooling2D
+   → Flatten
+   → Dense(128, relu)
+   → Dropout(0.4)
+   → Dense(1, sigmoid)
+```
+
+- **Optimizer:** Adam
+- **Loss:** Binary Crossentropy
+- **Metric tracked:** Accuracy
+- **Early stopping:** monitors validation loss, patience = 5, restores best weights
+- **Checkpointing:** saves best model (by validation accuracy) to `best_model.keras`
+- **Epochs:** up to 40 (early stopping typically halts sooner)
+
+## Usage
+
+Place the dataset under `Data/catdog/` following the structure above, then run:
+
+```bash
+python catdog_cnn.py
+```
+
+This trains the model, evaluates it on the test set, plots the training/validation accuracy curve, and prints a confusion matrix and classification report.
+
+## Future Improvements
+
+- Try transfer learning (e.g. MobileNetV2, EfficientNet) for higher accuracy with less training time
+- Add `.cache()` and `.prefetch()` to the data pipeline for faster training
+- Experiment with additional augmentation (brightness/contrast shifts) if misclassifications correlate with lighting
+- Log training runs (e.g. TensorBoard) for easier comparison across experiments
+
+
 ## 7.) EV Purchase Prediction — Neural Network Classifier
 
 A binary classification model predicting whether a customer will buy an electric vehicle (EV), built with TensorFlow/Keras and tuned via a custom decision threshold optimized for F1 score.
