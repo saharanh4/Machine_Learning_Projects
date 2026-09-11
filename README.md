@@ -193,11 +193,11 @@ Kaggle's "House Prices: Advanced Regression Techniques" (`train.csv`, `test.csv`
 
 A convolutional neural network that classifies images as cat or dog, built with TensorFlow/Keras, using data augmentation and early stopping to reduce overfitting on a relatively small image dataset.
 
-## Overview
+### Overview
 
 This project trains a CNN from scratch (no transfer learning) on labeled cat/dog images, using on-the-fly data augmentation, a three-block convolutional architecture, and checkpointing of the best-performing model during training.
 
-## Features
+### Features
 
 - Automatic dataset loading and labeling from directory structure (`image_dataset_from_directory`)
 - Stratified train/validation split (80/20) from the training directory
@@ -208,7 +208,7 @@ This project trains a CNN from scratch (no transfer learning) on labeled cat/dog
 - Early stopping on validation loss + checkpointing of the best model by validation accuracy
 - Evaluation via test accuracy/loss, training curves, confusion matrix, and classification report
 
-## Tech Stack
+### Tech Stack
 
 - Python 3.x
 - TensorFlow / Keras
@@ -217,7 +217,7 @@ This project trains a CNN from scratch (no transfer learning) on labeled cat/dog
 
 Images are resized to 180×180 and loaded in batches of 32.
 
-## Model Architecture
+### Model Architecture
 
 ```
 Input Image (180x180x3)
@@ -239,7 +239,7 @@ Input Image (180x180x3)
 - **Checkpointing:** saves best model (by validation accuracy) to `best_model.keras`
 - **Epochs:** up to 40 (early stopping typically halts sooner)
 
-## Usage
+### Usage
 
 Place the dataset under `Data/catdog/` following the structure above, then run:
 
@@ -249,12 +249,87 @@ python catdog_cnn.py
 
 This trains the model, evaluates it on the test set, plots the training/validation accuracy curve, and prints a confusion matrix and classification report.
 
-## Future Improvements
+### Future Improvements
 
 - Try transfer learning (e.g. MobileNetV2, EfficientNet) for higher accuracy with less training time
 - Add `.cache()` and `.prefetch()` to the data pipeline for faster training
 - Experiment with additional augmentation (brightness/contrast shifts) if misclassifications correlate with lighting
 - Log training runs (e.g. TensorBoard) for easier comparison across experiments
+
+## 6.) Sentiment Analysis — Fine-Tuned BERT Classifier
+
+A three-class sentiment classifier (negative / neutral / positive) built by fine-tuning `bert-base-uncased` on labeled text data, using Hugging Face Transformers and PyTorch.
+
+### Overview
+
+This project fine-tunes a pretrained BERT model for sequence classification on a custom sentiment dataset. It includes text preprocessing tailored for transformer models (rather than classical NLP pipelines), tokenization with the BERT tokenizer, a PyTorch `Dataset` wrapper, and training/evaluation via Hugging Face's `Trainer` API.
+
+### Features
+
+- Stratified 70/15/15 train/validation/test split
+- Lightweight preprocessing designed for BERT (lowercasing, URL removal) — stopword removal, lemmatization, and number-stripping are deliberately skipped, since BERT's subword tokenizer and pretrained embeddings already handle raw text well
+- Custom PyTorch `Dataset` class wrapping tokenized inputs and labels
+- Fine-tuning of `bert-base-uncased` for multi-class sequence classification
+- Per-epoch evaluation during training (accuracy, F1, precision, recall)
+- Final evaluation on a held-out test set with confusion matrix and classification report
+
+### Dataset
+
+`sentiment_analysis.csv` — text samples labeled with sentiment class: `negative`, `neutral`, or `positive`.
+
+**Split:** 70% train / 15% validation / 15% test, stratified by sentiment class.
+
+### Pipeline
+
+1. **Data loading & splitting** — stratified train/validation/test split
+2. **Text cleaning** — lowercase text, strip URLs (minimal preprocessing, by design, for a transformer model)
+3. **Tokenization** — `bert-base-uncased` tokenizer, max length 256, padding and truncation applied
+4. **Label encoding** — sentiment classes mapped to integer labels via `LabelEncoder`
+5. **Dataset/DataLoader construction** — custom PyTorch `Dataset` pairing tokenized inputs with labels
+6. **Model fine-tuning** — `bert-base-uncased` fine-tuned for sequence classification via Hugging Face `Trainer`
+7. **Evaluation** — accuracy, F1, precision, recall computed per epoch on validation set; final confusion matrix and classification report on the test set
+
+### Model & Training Configuration
+
+- **Base model:** `bert-base-uncased`
+- **Task:** 3-class sequence classification
+- **Epochs:** 10
+- **Batch size:** 16 (train and eval)
+- **Learning rate:** 2e-5
+- **Weight decay:** 0.01
+- **Max sequence length:** 256 tokens
+- **Evaluation strategy:** per epoch
+
+### Results
+
+Evaluated on a 75-sample held-out test set (20 negative, 30 neutral, 25 positive):
+
+| Class | Precision | Recall | F1-score | Support |
+|---|---|---|---|---|
+| Negative | 0.76 | 0.65 | 0.70 | 20 |
+| Neutral | 0.63 | 0.80 | 0.71 | 30 |
+| Positive | 0.75 | 0.60 | 0.67 | 25 |
+| **Accuracy** | | | **0.69** | 75 |
+| Macro avg | 0.72 | 0.68 | 0.69 | 75 |
+| Weighted avg | 0.71 | 0.69 | 0.69 | 75 |
+
+**Confusion Matrix:**
+
+|  | Predicted: Negative | Predicted: Neutral | Predicted: Positive |
+|---|---|---|---|
+| **Actual: Negative** | 13 | 5 | 2 |
+| **Actual: Neutral** | 3 | 24 | 3 |
+| **Actual: Positive** | 1 | 9 | 15 |
+
+Neutral is the strongest-recognized class (recall 0.80); positive sentiment is most often confused with neutral (9 of 25 positive samples misclassified as neutral).
+
+### Future Improvements
+
+- Set `load_best_model_at_end=True` alongside `metric_for_best_model` so the checkpoint with the best validation score is what actually gets evaluated on the test set, rather than whatever the final epoch produces
+- Expand the dataset — a 75-sample test set means single-example swings move reported metrics noticeably; a larger held-out set would give more reliable numbers
+- Investigate the positive→neutral confusion (9 misclassifications) — consider examining those specific examples for ambiguous or borderline sentiment
+- Try a learning rate scheduler or fewer epochs with early stopping to guard against overfitting on a small dataset
+- Compare against a lighter baseline (e.g. `distilbert-base-uncased` or a classical TF-IDF + logistic regression model) to quantify BERT's actual lift
 
 
 ## 7.) EV Purchase Prediction — Neural Network Classifier
