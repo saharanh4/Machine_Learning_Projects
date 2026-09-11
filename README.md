@@ -267,17 +267,10 @@ python ev_purchase_nn.py
 
 This trains the model, selects the F1-optimal classification threshold on the validation set, and writes `submission.csv` (`id`, `Will_Buy_EV`).
 
-### Results
-
-| Metric | Value |
-|---|---|
-| Best threshold (F1-optimized) | *[insert value]* |
-| F1 score at best threshold | *[insert value]* |
-| Validation AUC | *[insert value]* |
-
 ### Future Improvements
 
 - Add cross-validation instead of a single train/validation split for a more robust threshold estimate
 - Experiment with class weighting if `Will_Buy_EV` is imbalanced
 - Try gradient-boosted tree models (XGBoost/LightGBM) as a comparison baseline
 - Add feature importance / SHAP analysis to interpret key drivers of EV purchase intent
+
