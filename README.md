@@ -180,15 +180,6 @@ Kaggle's "House Prices: Advanced Regression Techniques" (`train.csv`, `test.csv`
 7. **Model tuning** — `GridSearchCV` (5-fold, RMSE) for XGBoost, Random Forest, and Ridge independently
 8. **Ensemble** — final prediction = `0.5 * XGBoost + 0.3 * RandomForest + 0.2 * Ridge`
 
-### Usage
-
-Place `train.csv` and `test.csv` in the `Data/house/` directory, then run:
-
-```bash
-python house_price_ensemble.py
-```
-
-This generates `submission.csv` in Kaggle submission format (`Id`, `SalePrice`).
 
 ### Future Improvements
 
@@ -197,3 +188,96 @@ This generates `submission.csv` in Kaggle submission format (`Id`, `SalePrice`).
 - Tune ensemble weights against a proper out-of-fold validation scheme instead of hardcoding them
 - Try target encoding for high-cardinality categorical features (e.g. `Neighborhood`)
 - Add SHAP or feature importance analysis to explain model predictions
+
+## 7.) EV Purchase Prediction — Neural Network Classifier
+
+A binary classification model predicting whether a customer will buy an electric vehicle (EV), built with TensorFlow/Keras and tuned via a custom decision threshold optimized for F1 score.
+
+### Overview
+
+This project predicts `Will_Buy_EV` from customer demographic, financial, and behavioral features. It includes a full preprocessing pipeline (ordinal + one-hot encoding, outlier clipping, scaling), a dense neural network with dropout regularization, and post-training threshold tuning to maximize F1 score rather than relying on the default 0.5 cutoff.
+
+### Features
+
+- Ordinal encoding for naturally ordered categorical features (e.g. anxiety level, yes/no flags)
+- One-hot encoding for remaining nominal categorical features
+- IQR-based outlier detection and clipping on skewed numeric features
+- Feature scaling on continuous/ordinal columns
+- Feedforward neural network with dropout for regularization
+- Early stopping on validation AUC to prevent overfitting
+- Decision threshold optimized via the precision-recall curve (max F1) instead of a fixed 0.5 cutoff
+
+### Tech Stack
+
+- Python 3.x
+- pandas / NumPy
+- TensorFlow / Keras
+- scikit-learn
+- Matplotlib / Seaborn
+
+### Dataset
+
+`ev-purchase` dataset (`train.csv`, `test.csv`) — customer records with features including:
+
+- `Age`, `Annual_Income_USD`, `Daily_Commute_km`
+- `Number_of_Cars_Owned`
+- `Charging_Stations_Near_Home`, `Charging_Stations_Near_Work`
+- `Home_Charging_Possible`, `Subsidy_Available` (ordinal, No/Yes)
+- `Range_Anxiety_Level` (ordinal, Low/Medium/High)
+- `Environmental_Concern_Level`
+
+**Target:** `Will_Buy_EV`
+
+### Pipeline
+
+1. **Data inspection** — check dtypes, null counts, and duplicate rows
+2. **Ordinal encoding** — `Home_Charging_Possible`, `Subsidy_Available` (No/Yes), and `Range_Anxiety_Level` (Low/Medium/High) mapped to explicit ordered scales
+3. **One-hot encoding** — remaining categorical columns
+4. **Outlier handling** — IQR-based detection across numeric columns, with clipping applied to `Annual_Income_USD` and `Daily_Commute_km`
+5. **Scaling** — `StandardScaler` applied to continuous/ordinal columns
+6. **Train/validation split** — 80/20 stratified split
+7. **Model training** — dense neural network with early stopping on validation AUC
+8. **Threshold tuning** — precision-recall curve computed on the validation set; final decision threshold chosen to maximize F1 score
+9. **Prediction** — tuned threshold applied to test set probabilities to produce final class predictions
+
+### Model Architecture
+
+```
+Input Layer
+   → Dense(64, activation='relu')
+   → Dropout(0.3)
+   → Dense(32, activation='relu')
+   → Dropout(0.3)
+   → Dense(1, activation='sigmoid')
+```
+
+- **Optimizer:** Adam
+- **Loss:** Binary Crossentropy
+- **Metrics tracked:** AUC, Accuracy
+- **Early stopping:** monitors validation AUC, patience = 5, restores best weights
+- **Batch size:** 32, up to 100 epochs (early stopping typically halts sooner)
+
+### Usage
+
+Place `train.csv` and `test.csv` in the `Data/ev-purchase/` directory, then run:
+
+```bash
+python ev_purchase_nn.py
+```
+
+This trains the model, selects the F1-optimal classification threshold on the validation set, and writes `submission.csv` (`id`, `Will_Buy_EV`).
+
+### Results
+
+| Metric | Value |
+|---|---|
+| Best threshold (F1-optimized) | *[insert value]* |
+| F1 score at best threshold | *[insert value]* |
+| Validation AUC | *[insert value]* |
+
+### Future Improvements
+
+- Add cross-validation instead of a single train/validation split for a more robust threshold estimate
+- Experiment with class weighting if `Will_Buy_EV` is imbalanced
+- Try gradient-boosted tree models (XGBoost/LightGBM) as a comparison baseline
+- Add feature importance / SHAP analysis to interpret key drivers of EV purchase intent
