@@ -4,9 +4,9 @@
   "model": "RandomForest",
   "primary_metric": "RMSE",
   "test_scores": {
-    "RMSE": 4324.328162781053,
-    "MAE": 2454.3824267868413,
-    "R2": 0.8918522115745396
+    "RMSE": 4203.133645469253,
+    "MAE": 2394.0259579877415,
+    "R2": 0.903859866971659
   },
   "best_params": {
     "model__max_depth": 5,
@@ -25,5 +25,5 @@
   ],
   "random_state": 42,
   "sklearn_version": "1.9.0",
-  "saved_at": "2026-10-18T11:10:37"
+  "saved_at": "2026-10-18T11:15:47"
 }
