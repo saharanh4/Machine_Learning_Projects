@@ -2,6 +2,7 @@
   "task": "regression",
   "target": "SalePrice",
   "model": "XGBoost",
+  "selected": "tuned",
   "primary_metric": "RMSE",
   "test_scores": {
     "RMSE": 26083.46875,
@@ -9,13 +10,14 @@
     "R2": 0.9113013744354248
   },
   "best_params": {
-    "model__colsample_bytree": 0.7088528997538541,
-    "model__learning_rate": 0.09051422630641873,
-    "model__max_depth": 2,
-    "model__n_estimators": 215,
-    "model__reg_lambda": 0.11421064100297752,
-    "model__subsample": 0.7219125032632117
+    "colsample_bytree": 0.7088528997538541,
+    "learning_rate": 0.09051422630641873,
+    "max_depth": 2,
+    "n_estimators": 215,
+    "reg_lambda": 0.11421064100297752,
+    "subsample": 0.7219125032632117
   },
+  "class_names": null,
   "features": [
     "MSSubClass",
     "MSZoning",
@@ -94,5 +96,5 @@
   ],
   "random_state": 42,
   "sklearn_version": "1.9.0",
-  "saved_at": "2026-10-19T15:20:09"
+  "saved_at": "2026-10-24T12:03:50"
 }
