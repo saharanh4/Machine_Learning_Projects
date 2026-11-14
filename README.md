@@ -95,7 +95,7 @@ Three functions: `cost_function`, `gradient_function` and `gradient_descent`. Bo
 #### Hyperparameters
 | Parameter | Value |
 |---|---|
-| Learning rate (α) | `[FILL]` |
+| Learning rate (α) | 0.0000199 |
 | Iterations | 20,000 |
 
 #### Results
@@ -196,7 +196,7 @@ Adam optimizer, binary cross-entropy, up to 40 epochs. `EarlyStopping` (patience
 Test accuracy and loss, training curves, confusion matrix and classification report.
 
 #### Results
-Test accuracy: `[FILL]`. Test loss: `[FILL]`.
+Test accuracy: `[	0.84]`. Test loss: `[0.37]`.
 
 #### How to Run
 Open `Notebooks/5-Cat_Dog.ipynb`. A GPU speeds up training noticeably.
