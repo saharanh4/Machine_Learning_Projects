@@ -268,7 +268,7 @@ Install the spaCy model first (`python -m spacy download en_core_web_sm`). A GPU
 ### 4.7 EV Purchase Prediction
 
 #### Overview
-Entry for the Kaggle competition `[FILL: competition name]`. Predicts whether a person will buy an electric vehicle (`Will_Buy_EV`) with a neural network and a tuned decision threshold.
+Entry for the Kaggle competition Predicting Electric Vehicle Purchases. Predicts whether a person will buy an electric vehicle (`Will_Buy_EV`) with a neural network and a tuned decision threshold.
 
 #### Dataset
 `Data/ev-purchase/train.csv` and `Data/ev-purchase/test.csv`.
@@ -404,7 +404,7 @@ Run the notebook and answer the prompts. Load the saved model later with `joblib
 
 ## Tech Stack
 
-- **Language:** Python `[FILL: version]`
+- **Language:** Python 3.11.16
 - **Data:** pandas, NumPy
 - **Visualization:** Matplotlib, seaborn
 - **Classical ML:** scikit-learn, XGBoost
@@ -412,27 +412,11 @@ Run the notebook and answer the prompts. Load the saved model later with `joblib
 - **NLP:** Hugging Face Transformers, spaCy
 - **Utilities:** joblib, SciPy, Jupyter
 
-## Datasets
-
-| Project | Files | Source |
-|---|---|---|
-| Iris | `Iris.csv` | `[FILL]` |
-| Linear Regression | `Salary Data.csv` | `[FILL]` |
-| Titanic | `titanic/` | `[FILL]` |
-| Housing | `house/` | `[FILL]` |
-| Cat vs Dog | `catdog/` | `[FILL]` |
-| Sentiment | `sentiment_analysis.csv` | `[FILL]` |
-| EV Purchase | `ev-purchase/` | Kaggle competition data: `[FILL]` |
-| Stocks | `stock_data/` | `[FILL]` |
-| ML Pipeline | `Pipeline_data/` | `[FILL]` |
-
-Datasets belong to their original owners and follow their own licenses, which are separate from this repository's license.
-
 ## Installation
 
 ```bash
-git clone [FILL: repo URL]
-cd [FILL: repo name]
+git clone https://github.com/saharanh4/Machine_Learning_Projects.git
+cd Machine_Learning_Projects
 
 python -m venv venv
 source venv/bin/activate        # Windows: venv\Scripts\activate
@@ -461,7 +445,7 @@ python -m spacy download en_core_web_sm
 | 2 | Linear Regression from Scratch | Regression | Gradient descent | Final w, b | 5986.25, 45666.16 |
 | 3 | Titanic | Classification | Random Forest | Kaggle public score | 0.77511 |
 | 4 | Housing Price Predictor | Regression | XGB + RF + Ridge ensemble | Kaggle score (log RMSE) | 0.12345 |
-| 5 | Cat vs Dog | Image classification | CNN | Test accuracy | `[FILL]` |
+| 5 | Cat vs Dog | Image classification | CNN | Test accuracy | 0.84 |
 | 6 | Sentiment Analysis | NLP classification | BERT | Test accuracy / weighted F1 | 0.69 / 0.69 |
 | 7 | EV Purchase Prediction | Classification | Neural network | Kaggle public / private | 0.93766 / 0.93722 |
 | 8 | Stock Movement Prediction | Time-series classification | LSTM | Test accuracy | 48.9% |
