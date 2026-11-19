@@ -289,7 +289,7 @@ IQR check on all numeric columns. `Annual_Income_USD` and `Daily_Commute_km` are
 The decision threshold is chosen on the validation set to maximize F1, then applied to the test predictions.
 
 #### Results
-Best leaderboard submission (metric: `[FILL]`): **0.93766** public, **0.93722** private. Best validation threshold: `[FILL]`, with F1 of `[FILL]` at that threshold.
+Best leaderboard submission : **0.93766** public, **0.93722** private.
 
 #### How to Run
 Open `Notebooks/7-Customer_Churn_Prediction.ipynb`. Predictions are written to `submission.csv`.
@@ -301,8 +301,6 @@ Open `Notebooks/7-Customer_Churn_Prediction.ipynb`. Predictions are written to `
 #### Overview
 Predicts whether a stock's adjusted close will be higher the next trading day (a direction label, not a price) for Amazon, Apple, Google, Microsoft and Netflix.
 
-#### Data Source
-Daily price CSVs in `Data/stock_data/`, one file per company. Source: `[FILL]`.
 
 #### Feature Engineering
 Daily return, 5/10/20-day moving-average ratios, 14-day RSI, 10 and 20-day volatility, volume change and a one-hot company indicator.
@@ -328,10 +326,10 @@ Rolling 30-day windows are built per company, so a window never mixes two stocks
 Accuracy and classification report. Logistic Regression and XGBoost are scored on the validation set. The LSTM is scored on the test set.
 
 #### Results
-| Model | Validation accuracy | Test accuracy |
-|---|---|---|
-| Logistic Regression | `[FILL]` | `[FILL]` |
-| XGBoost | `[FILL]` | `[FILL]` |
+| Model | Test accuracy |
+|---|---|
+| Logistic Regression | 49.3% |
+| XGBoost | 52.9% |
 | LSTM | not reported | 48.9% |
 | Always predict the majority class (label 0) | not reported | 51.0% |
 
